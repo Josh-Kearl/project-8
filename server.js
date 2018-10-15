@@ -117,7 +117,7 @@ app.get('/delete/:uid', (req, res) =>{
     let editUserCB = (index, jsonDataObject) =>{
         let users = jsonDataObject.users;
         let writeCB = () =>{
-            console.log('User Updated');
+            console.log('User Deleted!');
             res.redirect('/listingView');
         };
         users.splice(index, 1);
