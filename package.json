@@ -10,7 +10,9 @@
   "author": "josh",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "path": "^0.12.7",
     "uuid": "^3.3.2"
   }
 }

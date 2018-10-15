@@ -6,11 +6,10 @@ const bodyParser = require('body-parser');
 
 //storage/identification for users
 const userJsonFile = __dirname +'/users.json';
-
 const uuidv1 = require('uuid/v1'); //generates a random Id
 
 
-app.set('pages', path.join(__dirname, 'pages'));
+app.set('views', path.join(__dirname, 'views'));
 
 //engine template syntax, remember for future dates
 app.set('view engine', 'pug');
@@ -34,7 +33,7 @@ function read (callback) {
 }
 
 function write (dataObject, callback) {
-    fs.writeFile(userJsonFile, JSON.stringify(jsonDataObject), 'utf8', (err) =>{
+    fs.writeFile(userJsonFile, JSON.stringify(dataObject), 'utf8', (err) =>{
         if (err) console.log(err);
         callback();
     });
@@ -47,35 +46,12 @@ function addUser(dataObject, callback) {
             callback();
         };
         users.push(dataObject);
-        write(jsonDataObject, writeData);
+        write(userDataObject, writeData);
     };
     read(readData);
 }
 
-function editUser(uid, callback){
-    let readData = (userDataObject) =>{
-        let users = userDataObject.users;
-        users.forEach((user, index) =>{
-            if (user.uid === uid) {
-                callback(index, userDataObject);
-            }
-        });
-    };
-    read(readData);
-}
-
-
-
-
-
-app.get('listingView', (req, res) =>{
-    let callback = (jsonDataObject) =>{
-        console.log("User data returned successfully");
-        res.render('listingView', {users: jsonDataObject.users});
-    }
-    read(callback);
-});
-app.post('/addUser', (req, res) =>{
+app.post('/addUser', (req, res) => {
     let body = req.body;
     let newUserObject = {
         uid: uuidv1(),
@@ -85,7 +61,7 @@ app.post('/addUser', (req, res) =>{
         age: body.age,
     }
 
-    let addUserCB = () =>{
+    let addUserCB = () => {
         console.log("User successfully added!");
         res.redirect('/listingView');
     };
@@ -93,54 +69,13 @@ app.post('/addUser', (req, res) =>{
 });
 
 
-app.get('edit/:uid', (req, res) =>{
-    let uid = req.params.uid;
-    let editUserCB = (index, jsonDataObject) =>{
-        let users = jsonDataObject.users;
-        console.log(`${users[index].name} Edit is successfull`);
-        res.render('userEdit', {user: users[index]});
-    };
-    editUser(uid, editUserCB);
-});
-
-app.post('edit/:uid', (req, res) => {
-    let uid = req.params.uid;
-    let body = req.body;
-    console.log(body);
-    let newUserObject = {
-        uid: uid,
-        id: body.id,
-        name: body.name,
-        email: body.email,
-        age: body.age,
+app.get('/listingView', (req, res) =>{
+    let callback = (jsonDataObject) =>{
+        console.log("User data returned successfully");
+        res.render('listingView', {users: jsonDataObject.users});
     }
-    let editUserCB = (index, jsonDataObject) =>{
-        let users = jsonDataObject.users;
-        let writeCB = () =>{
-            console.log('User Updated');
-            res.redirect('/userListing');
-        };
-    };
-    editUser(uid, editUserCB);
+    read(callback);
 });
-
-app.get('/delete/:uid', (req, res) =>{
-    let uid = req.params.uid;
-    let editUserCB = (index, jsonDataObject) =>{
-        let users = jsonDataObject.users;
-        let writeCB = () =>{
-            console.log('User Updated');
-            res.redirect('/userListing');
-        };
-        users.splice(index, 1);
-        write(jsonDataObject, writeCB);
-    };
-    editUser(uid, editUserCB);
-})
-
-
-
-
 
 
 app.listen(3000, () =>{
