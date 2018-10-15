@@ -1,0 +1,22 @@
+html
+    body
+        table
+            tr
+                th User ID
+                th Name
+                th Email
+                th Age
+            each user, index in users
+                tr
+                    td #{user.id}
+                    td #{user.id}
+                    td #{user.id}
+                    td #{user.id}
+                    td
+                        a(href=`/edit/${user.uid}`) Edit
+                        |
+                        |
+                        a(href=`/delete/${user.uid}`) Delete
+                        |
+                        |
+        a(href="/") Add Users
