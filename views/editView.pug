@@ -1,4 +1,7 @@
 html
+    head
+        link(href="/pugStyle.css", rel="stylesheet")
+        title edit #{user.uid}
     body
         table
             tr
@@ -8,15 +11,15 @@ html
                 th Age
             tr
                 form(action=`/edit/${user.uid}` method="post")
-                td
-                    input(placeholder="UserID" type="text" name="id" value=user.id)
-                td
-                    input(placeholder="Name" type="text" name="name" value=user.name)
-                td
-                    input(placeholder="Email" type="text" name="email" value=user.email)
-                td
-                    input(placeholder="Age" type="text" name="age" value=user.age)
-                td
-                    input(type="submit" value="Save")
-            a(href="/userListing") Cancel
+                    td
+                        input(placeholder="UserID" type="text" name="id" value=user.id)
+                    td
+                        input(placeholder="Name" type="text" name="name" value=user.name)
+                    td
+                        input(placeholder="Email" type="text" name="email" value=user.email)
+                    td
+                        input(placeholder="Age" type="text" name="age" value=user.age)
+                    td
+                        input(type="submit" value="Save")
+            button(class="cancelbtn" href="/listingView") Cancel
 

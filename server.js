@@ -68,10 +68,68 @@ app.post('/addUser', (req, res) => {
     addUser(newUserObject, addUserCB);
 });
 
+function editUser(uid, callback){
+    let readData = (userDataObject) =>{
+        let users = userDataObject.users;
+        users.forEach((user, index) =>{
+            if (user.uid === uid) {
+                callback(index, userDataObject);
+            }
+        });
+    };
+    read(readData);
+}
+
+app.get('/edit/:uid', (req, res) => {
+    let uid = req.params.uid;
+    let editUserCB = (index, dataObject) => {
+        let users = dataObject.users;
+        console.log(`${users[index].name}Grabbed edit successfully`);
+        res.render('editView', {user: users[index]});
+    };
+    editUser(uid, editUserCB);
+});
+
+app.post('/edit/:uid', (req, res) => {
+    let uid = req.params.uid;
+    let body = req.body;
+    let newUserObject = {
+        uid: uid,
+        id: body.id,
+        name: body.name,
+        email: body.email,
+        age: body.age,
+    }
+    let editUserCB = (index, dataObject) => {
+        let users = dataObject.users;
+        let writeCB = () => {
+            console.log('Edit Successful');
+            res.redirect('/listingView');
+        };
+        users[index] = newUserObject;
+        write(dataObject, writeCB);
+    };
+    editUser(uid, editUserCB);
+});
+
+app.get('/delete/:uid', (req, res) =>{
+    let uid = req.params.uid;
+    let editUserCB = (index, jsonDataObject) =>{
+        let users = jsonDataObject.users;
+        let writeCB = () =>{
+            console.log('User Updated');
+            res.redirect('/listingView');
+        };
+        users.splice(index, 1);
+        write(jsonDataObject, writeCB);
+    };
+    editUser(uid, editUserCB);
+});
+
 
 app.get('/listingView', (req, res) =>{
     let callback = (jsonDataObject) =>{
-        console.log("User data returned successfully");
+        console.log("User data grabbed successfully");
         res.render('listingView', {users: jsonDataObject.users});
     }
     read(callback);
